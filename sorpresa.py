@@ -1,0 +1,149 @@
+import streamlit as st
+import datetime
+import time
+import random
+
+# --- CONFIGURACIÓN DE LA PÁGINA ---
+st.set_page_config(page_title="Un mensaje especial", page_icon="💝", layout="wide")
+
+# --- GENERACIÓN DE GATITOS FLOTANTES ---
+num_gatitos = 35 
+emojis_gatitos = ["🐱", "🐈", "🐈‍⬛", "😺", "😽", "😸","💝"]
+html_gatitos = ""
+
+for i in range(num_gatitos):
+    left_pos = random.randint(0, 95) 
+    duration = random.uniform(8, 15) 
+    delay = random.uniform(0, 10) 
+    emoji = random.choice(emojis_gatitos)
+    html_gatitos += f'<div class="cat" style="left: {left_pos}%; animation-delay: {delay}s; animation-duration: {duration}s;">{emoji}</div>'
+
+# --- ESTILOS PERSONALIZADOS (CSS) ---
+custom_css = f"""
+<style>
+/* Importamos fuentes bonitas desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap');
+
+/* Fondo y Flores */
+[data-testid="stAppViewContainer"] {{
+    background-color: #e0f7fa;
+    background-image: linear-gradient(135deg, #e0f7fa 25%, #b2ebf2 100%);
+    overflow: hidden; 
+}}
+
+[data-testid="stAppViewContainer"]::after {{
+    content: "";
+    background-image: url('https://www.publicdomainpictures.net/pictures/30000/velka/field-of-yellow-flowers-13340523284gA.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    opacity: 0.3;
+    top: 0; left: 0; bottom: 0; right: 0;
+    position: absolute;
+    z-index: -1;
+}}
+
+/* =========================================================
+   AQUÍ PUEDES CAMBIAR EL ESTILO Y TAMAÑO DEL TEXTO PRINCIPAL
+   ========================================================= */
+.titulo-amor {{
+    font-family: 'Dancing Script', cursive; /* <-- CAMBIA EL ESTILO AQUÍ */
+    font-size: 5rem;                        /* <-- CAMBIA EL TAMAÑO AQUÍ (ej. 4rem, 6rem) */
+    color: #e65100;
+    font-weight: 700;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    margin-top: 50px;
+}}
+
+/* =========================================================
+   ESTILOS DEL CORAZÓN Y DEL TIEMPO
+   ========================================================= */
+.corazon-container {{
+    width: 280px;  /* Ancho del corazón */
+    height: 280px; /* Alto del corazón */
+    /* Dibujamos un corazón rojo usando código SVG */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff4b4b"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    filter: drop-shadow(3px 5px 5px rgba(0,0,0,0.3)); /* Sombrita del corazón */
+}}
+
+.texto-tiempo {{
+    font-family: 'Arial', sans-serif; /* <-- CAMBIA EL ESTILO DEL TIEMPO AQUÍ */
+    font-size: 1.8rem;                /* <-- CAMBIA EL TAMAÑO DEL TIEMPO AQUÍ */
+    color: white;                     /* El texto es blanco para que contraste con el rojo */
+    font-weight: bold;
+    text-align: center;
+    margin-top: -15px; /* Sube el texto un poco para que quede en el centro del corazón */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}}
+
+/* --- Animación de gatitos --- */
+.cat-container {{
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden; pointer-events: none; z-index: 100;
+}}
+
+.cat {{
+    position: absolute; font-size: 30px; bottom: -50px; opacity: 0;
+    animation-name: floatUp; animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+}}
+
+@keyframes floatUp {{
+    0% {{ bottom: -50px; opacity: 0; transform: translateX(0); }}
+    5% {{ opacity: 1; }}
+    50% {{ transform: translateX(10px); }}
+    95% {{ opacity: 1; }}
+    100% {{ bottom: 110vh; opacity: 0; transform: translateX(0); }}
+}}
+</style>
+"""
+st.markdown(custom_css, unsafe_allow_html=True)
+
+st.markdown(f'<div class="cat-container">{html_gatitos}</div>', unsafe_allow_html=True)
+
+# --- CONTENIDO PRINCIPAL ---
+col1, col2 = st.columns([2, 1])
+
+with col1:
+    st.markdown('<p class="titulo-amor">te amo demasiado ❤️, estoy perdidamente enamorado de ti, espero con ansias que sea nuestro primer aniversario, ya casi sera nuestro primer año juntos y nos espera una vida eterna, no olvides que te amo y que eres una de las personas mas importantes de mi vida, te adoro con todas mis fuerzas,  y por si tienes dudas de cuanto tiempo falta...</p>', unsafe_allow_html=True)
+
+with col2:
+    fecha_objetivo = datetime.datetime(2026, 4, 3, 23, 59, 59)
+    t = st.empty()
+
+    while True:
+        ahora = datetime.datetime.now()
+        diferencia = fecha_objetivo - ahora
+        
+        if diferencia.total_seconds() <= 0:
+            # Si llega a cero, muestra ceros dentro del corazón
+            html_corazon = f'''
+            <div class="corazon-container">
+                <div class="texto-tiempo">0 Días<br>00:00:00</div>
+            </div>
+            '''
+            t.markdown(html_corazon, unsafe_allow_html=True)
+            break
+        
+        dias = diferencia.days
+        horas, rem = divmod(diferencia.seconds, 3600)
+        minutos, segundos = divmod(rem, 60)
+        
+        # Aquí construimos el corazón SOLO con los números, divididos en dos líneas (<br>)
+        html_corazon = f'''
+        <div class="corazon-container">
+            <div class="texto-tiempo">
+                {dias} Días<br>{horas:02}:{minutos:02}:{segundos:02}
+            </div>
+        </div>
+        '''
+        
+        t.markdown(html_corazon, unsafe_allow_html=True)
+        time.sleep(1)
